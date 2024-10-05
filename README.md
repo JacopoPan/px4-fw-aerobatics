@@ -169,18 +169,6 @@ ros2 run ros_gz_bridge parameter_bridge /clock@rosgraph_msgs/msg/Clock[gz.msgs.C
 In a fourth terminal, start PX4 SITL
 
 ```sh
-GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:~/git/ws/src/px4-fw-aerobatics/resrouces/models UAV_NAME="Drone1" PX4_SYS_AUTOSTART=4010 ~/git/PX4-Autopilot/build/px4_sitl_default/bin/px4 
-# 4010 for fs, 4011 for custom_vtol
-# Note: the one-liner above is equivalent to the following commands
-export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:~/git/ws/src/px4-fw-aerobatics/resrouces/models # Where to find the drones' and objects .sdf
-export UAV_NAME="Drone1" # Used in the `.post` script by the `uxrce_dds_client`
-export PX4_SYS_AUTOSTART=4008 # Matching the prefixes in `PX4-Autopilot/ROMFS/px4fmu_common/init.d-posix`
-~/git/PX4-Autopilot/build/px4_sitl_default/bin/px4 # add `-i 1` (2,3,..) for additional instances of PX4
-```
-
-In a fourth terminal, start PX4 SITL
-
-```sh
 # Export LAT_DEG, LON_DEG, ELEV_M from the world .sdf
 # Set the PX4_GZ_MODEL_POSE 'x,y,z,r,p,y' within the world,
 # Select the vehicle configuration PX4_SYS_AUTOSTART (4008 for custom_vtol)
