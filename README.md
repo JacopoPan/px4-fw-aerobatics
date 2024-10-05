@@ -2,7 +2,7 @@
 
 Autonomous aileron rolls and dives using VTOL's PX4 off-board control in ROS2
 
-<img src="/resources/roll-and-dive.gif" alt="Roll and Dive" width="500"/>
+<img src="/resources/roll-and-dive.gif" alt="Roll and Dive" width="800"/>
 
 ## Standalone Installation
 
