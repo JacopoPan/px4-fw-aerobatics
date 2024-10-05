@@ -4,15 +4,9 @@ Autonomous aileron rolls and dives using VTOL's PX4 off-board control in ROS2
 
 <img src="/resources/roll-and-dive.gif" alt="Roll and Dive" width="800"/>
 
-## Standalone Installation
+## Installation
 
 Tested on Ubuntu 22.04 LTS with Nvidia 535 driver
-
-### Base tools
-
-```sh
-sudo apt install git
-```
 
 ### ROS2 Humble
 
@@ -53,10 +47,10 @@ sudo apt-get install gz-harmonic
 sudo apt install ros-humble-ros-gzharmonic # To publish the Gazebo /clock topic used by ROS2 when use_sim_time is true
 ```
 
-### PX4 SITL
+### Custom PX4 SITL
 
 ```sh
-mkdir ~/git/
+mkdir -p ~/git/
 cd ~/git/ # Place in a folder for git repos
 git clone git@github.com:JacopoPan/PX4-Autopilot.git # for of 1.14.3 with custom vtol takeoff heading and gazebo harmonic fix
 cd PX4-Autopilot/
@@ -96,6 +90,7 @@ sudo ldconfig /usr/local/lib/
 ### ROS2 Workspace
 
 ```sh
+mkdir -p ~/git/ws/src/
 cd ~/git/ws/src/ # Place in the source folder of a workspace inside the git folder
 git clone -b release/1.14 https://github.com/PX4/px4_msgs.git # PX4 messages definitions
 git clone git@github.com:JacopoPan/px4-fw-aerobatics.git
@@ -123,7 +118,7 @@ cp ~/git/ws/src/px4-fw-aerobatics/resources/dds_topics.yaml ~/git/PX4-Autopilot/
 
 #### Embed Custom ROMS Files in the SITL Firmware Binaries
 
-These include the PX4 `params` and the `.post` scripts to start the `uxrce_dds_client` in the proper namespace
+These include custom PX4 `params`
 ```sh
 cp -r ~/git/ws/src/px4-fw-aerobatics/resrouces/airframes ~/git/PX4-Autopilot/ROMFS/px4fmu_common/init.d-posix/
 ```
@@ -142,7 +137,7 @@ rm -rf build/
 make px4_sitl # There will be warnings for the custom_vtol .sdf not being within PX4-Autopilot 
 ```
 
-Use `./resources/set_dds_roms_and_rebuild_px4.sh` for every change of PX4 params or DDS topics
+Or use `./resources/set_dds_roms_and_rebuild_px4.sh` to apply these changes of PX4 params or DDS topics
 
 ## Single Drone Example—Startup
 
@@ -190,7 +185,7 @@ screen -c ~/git/ws/src/px4-fw-aerobatics/resrouces/screenrc-example
 killall screen && pkill -f gz # To quit screen and gazebo
 ```
 
-## VTOL Example using VehicleCommand
+## VTOL Aerobatics
 
 Start the simulation environment for `custom_vtol` as in the example above
 
