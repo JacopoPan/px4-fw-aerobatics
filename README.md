@@ -2,6 +2,9 @@
 
 Autonomous aileron rolls and dives using VTOL's PX4 off-board control in ROS2
 
+![](/resources/roll-and-dive.gif)
+
+
 ## Standalone Installation
 
 Tested on Ubuntu 22.04 LTS with Nvidia 535 driver
