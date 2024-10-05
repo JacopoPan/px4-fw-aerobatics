@@ -58,10 +58,8 @@ sudo apt install ros-humble-ros-gzharmonic # To publish the Gazebo /clock topic 
 ```sh
 mkdir ~/git/
 cd ~/git/ # Place in a folder for git repos
-git clone https://github.com/PX4/PX4-Autopilot.git
+git clone git@github.com:JacopoPan/PX4-Autopilot.git # for of 1.14.3 with custom vtol takeoff heading and gazebo harmonic fix
 cd PX4-Autopilot/
-git checkout v1.14.3
-git cherry-pick 2d7838329602f163b24d4eefbeb91ac947568186 # Fix the gz_bridge of PX4 1.14 to use Gazebo Harmonic (see [PR 22207](https://github.com/PX4/PX4-Autopilot/pull/22207))
 git submodule update --init --recursive
 bash ./Tools/setup/ubuntu.sh --no-sim-tools # Reboot
 pip install --user -U empy==3.3.4 pyros-genmsg setuptools
@@ -141,7 +139,7 @@ Rebuild PX4 SITL
 ```sh
 cd ~/git/PX4-Autopilot
 rm -rf build/
-make px4_sitl # There will be warnings for the fs and custom_vtol .sdf not being within PX4-Autopilot 
+make px4_sitl # There will be warnings for the custom_vtol .sdf not being within PX4-Autopilot 
 ```
 
 Use `./resources/set_dds_roms_and_rebuild_px4.sh` for every change of PX4 params or DDS topics
