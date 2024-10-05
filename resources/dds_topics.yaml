@@ -1,0 +1,58 @@
+#####
+#
+# This file maps all the topics that are to be used on the micro DDS client.
+# publication / subscription refers to the FC point of view
+#
+#####
+publications:
+  - topic: /fmu/out/vehicle_control_mode
+    type: px4_msgs::msg::VehicleControlMode
+
+  - topic: /fmu/out/vehicle_odometry
+    type: px4_msgs::msg::VehicleOdometry
+
+  - topic: /fmu/out/vehicle_status
+    type: px4_msgs::msg::VehicleStatus
+
+  - topic: /fmu/out/vtol_vehicle_status
+    type: px4_msgs::msg::VtolVehicleStatus
+
+  - topic: /fmu/out/vehicle_global_position
+    type: px4_msgs::msg::VehicleGlobalPosition
+
+  - topic: /fmu/out/battery_status
+    type: px4_msgs::msg::BatteryStatus
+
+  - topic: /fmu/out/timesync_status
+    type: px4_msgs::msg::TimesyncStatus
+
+  - topic: /fmu/out/position_controller_status
+    type: px4_msgs::msg::PositionControllerStatus
+
+  - topic: /fmu/out/actuator_outputs
+    type: px4_msgs::msg::ActuatorOutputs
+
+  - topic: /fmu/out/vehicle_attitude_setpoint
+    type: px4_msgs::msg::VehicleAttitudeSetpoint
+
+  - topic: /fmu/out/airspeed_validated
+    type: px4_msgs::msg::AirspeedValidated
+
+  - topic: /fmu/out/vehicle_torque_setpoint
+    type: px4_msgs::msg::VehicleTorqueSetpoint
+
+  - topic: /fmu/out/vehicle_thrust_setpoint
+    type: px4_msgs::msg::VehicleThrustSetpoint
+
+subscriptions:
+  - topic: /fmu/in/offboard_control_mode
+    type: px4_msgs::msg::OffboardControlMode
+
+  - topic: /fmu/in/vehicle_command
+    type: px4_msgs::msg::VehicleCommand
+
+  - topic: /fmu/in/vehicle_attitude_setpoint
+    type: px4_msgs::msg::VehicleAttitudeSetpoint
+
+  - topic: /fmu/in/trajectory_setpoint
+    type: px4_msgs::msg::TrajectorySetpoint
