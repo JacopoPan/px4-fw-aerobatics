@@ -118,7 +118,7 @@ cp ~/git/ws/src/px4-fw-aerobatics/resources/dds_topics.yaml ~/git/PX4-Autopilot/
 
 #### Embed Custom ROMS Files in the SITL Firmware Binaries
 
-These include custom PX4 `params`
+These include custom PX4 `params` for initial GPS position and do not quadchute during aggressive maneuvers
 ```sh
 cp -r ~/git/ws/src/px4-fw-aerobatics/resrouces/airframes ~/git/PX4-Autopilot/ROMFS/px4fmu_common/init.d-posix/
 ```
@@ -171,14 +171,14 @@ In a fourth terminal, start PX4 SITL
 LAT_DEG=$(awk -F '[><]' '/<spherical_coordinates>/,/<\/spherical_coordinates>/' ~/git/ws/src/px4-fw-aerobatics/resources/worlds/default.sdf | awk -F '[><]' '/latitude_deg/ {print $3}') LON_DEG=$(awk -F '[><]' '/<spherical_coordinates>/,/<\/spherical_coordinates>/' ~/git/ws/src/px4-fw-aerobatics/resources/worlds/default.sdf | awk -F '[><]' '/longitude_deg/ {print $3}') ELEV_M=$(awk -F '[><]' '/<spherical_coordinates>/,/<\/spherical_coordinates>/' ~/git/ws/src/px4-fw-aerobatics/resources/worlds/default.sdf | awk -F '[><]' '/elevation/ {print $3}') PX4_GZ_MODEL_POSE='0,0,0,0,0,0' PX4_SYS_AUTOSTART=4008 PX4_UXRCE_DDS_NS="Drone1" PX4_UXRCE_DDS_PORT=8888 ~/git/PX4-Autopilot/build/px4_sitl_default/bin/px4 # add `-i 1` (2,3,..) for additional instances of PX4
 ```
 
-Start QGroundControl in a sixth terminal for vehicle monitoring
+Start QGroundControl in a fifth terminal for vehicle monitoring
 
 ```sh
 cd ~/
 ./QGroundControl.AppImage
 ```
 
-Alternatively, run all of the above 6 steps in one `screen` session
+Alternatively, run all of the above 5 steps in one `screen` session
 
 ```sh
 screen -c ~/git/ws/src/px4-fw-aerobatics/resrouces/screenrc-example
@@ -193,7 +193,7 @@ Start the simulation environment for `custom_vtol` as in the example above
 screen -c ~/git/ws/src/px4-fw-aerobatics/resources/screenrc-example
 ```
 
-Run `PX4Whisperer` (a simple node implementing basic takeoff, landing, and offboard maneuvers)
+Run `PX4Whisperer` (a simple node implementing a service for autonomous takeoff, landing, and offboard maneuvers)
 
 ```sh
 cd ~/git/ws/src/px4-fw-aerobatics/vtol_example/
