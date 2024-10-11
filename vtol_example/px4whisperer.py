@@ -151,7 +151,7 @@ class PX4Whisperer(Node):
             self.get_logger().info(f'Pos: {self.lat:.2f} {self.lon:.2f} {self.alt:.2f} TAS: {self.tas_validated:.2f} Wind: {self.wind_n:.2f} {self.wind_n:.2f} VTOL Status: {self.vtol_status}')
         self.printer_counter += 1
 
-    def threaded_service_callback(self, request, response):
+    def threaded_service_callback(self, request, response): # alternatively, use different callback groups for subscribers and services
         self.service_thread = Thread(target=self.service_callback, args=(request, response))
         self.service_thread.start()
         return response
