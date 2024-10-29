@@ -2,7 +2,7 @@
 screen -t microxrceagent bash -c 'MicroXRCEAgent udp4 -p 8888'
 
 # Terminal 2: Gazebo Simulator
-screen -t gazebo bash -c 'GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:~/git/ws/src/px4-fw-aerobatics/resrouces/models gz sim -r ~/git/ws/src/px4-fw-aerobatics/resources/worlds/default.sdf'
+screen -t gazebo bash -c 'GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:~/git/ws/src/px4-fw-aerobatics/resources/models gz sim -r ~/git/ws/src/px4-fw-aerobatics/resources/worlds/default.sdf'
 
 # Terminal 3: Publish the Gazebo simulation clock for ROS2
 screen -t sim_clock bash -c 'source ~/git/ws/install/setup.bash && source /opt/ros/humble/setup.bash; ros2 run ros_gz_bridge parameter_bridge /clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'
@@ -11,7 +11,7 @@ screen -t sim_clock bash -c 'source ~/git/ws/install/setup.bash && source /opt/r
 screen -t px4 bash -c 'sleep 5; LAT_DEG=$(awk -F "[><]" "/<spherical_coordinates>/,/<\/spherical_coordinates>/" ~/git/ws/src/px4-fw-aerobatics/resources/worlds/default.sdf | awk -F "[><]" "/latitude_deg/ {print \$3}") LON_DEG=$(awk -F "[><]" "/<spherical_coordinates>/,/<\/spherical_coordinates>/" ~/git/ws/src/px4-fw-aerobatics/resources/worlds/default.sdf | awk -F "[><]" "/longitude_deg/ {print \$3}") ELEV_M=$(awk -F "[><]" "/<spherical_coordinates>/,/<\/spherical_coordinates>/" ~/git/ws/src/px4-fw-aerobatics/resources/worlds/default.sdf | awk -F "[><]" "/elevation/ {print \$3}") PX4_GZ_MODEL_POSE="0,0,0,0,0,0" PX4_SYS_AUTOSTART=4008 PX4_UXRCE_DDS_NS="Drone1" PX4_UXRCE_DDS_PORT=8888 ~/git/PX4-Autopilot/build/px4_sitl_default/bin/px4'
 
 # Terminal 5: QGroundControl
-screen -t qgroundcontrol bash -c './QGroundControl.AppImage'
+screen -t qgroundcontrol bash -c '~/QGroundControl.AppImage'
 
 # Visualize the PX4 SITL output
 select 3 # PX4 is in the 4th (index 3) window
