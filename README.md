@@ -52,7 +52,7 @@ sudo apt install ros-humble-ros-gzharmonic # To publish the Gazebo /clock topic 
 ```sh
 mkdir -p ~/git/
 cd ~/git/ # Place in a folder for git repos
-git clone git@github.com:JacopoPan/PX4-Autopilot.git # for of 1.14.3 with custom vtol takeoff heading and gazebo harmonic fix
+git clone git@github.com:JacopoPan/PX4-Autopilot.git # Fork of 1.14.3 with custom vtol takeoff heading and Gazebo Harmonic fix
 cd PX4-Autopilot/
 git submodule update --init --recursive
 bash ./Tools/setup/ubuntu.sh --no-sim-tools # Reboot
@@ -120,7 +120,7 @@ cp ~/git/ws/src/px4-fw-aerobatics/resources/dds_topics.yaml ~/git/PX4-Autopilot/
 
 These include custom PX4 `params` for initial GPS position and do not quadchute during aggressive maneuvers
 ```sh
-cp -r ~/git/ws/src/px4-fw-aerobatics/resrouces/airframes ~/git/PX4-Autopilot/ROMFS/px4fmu_common/init.d-posix/
+cp -r ~/git/ws/src/px4-fw-aerobatics/resources/airframes ~/git/PX4-Autopilot/ROMFS/px4fmu_common/init.d-posix/
 ```
 Update the airframes' `CMakeLists.txt`
 ```sh
@@ -150,7 +150,7 @@ MicroXRCEAgent udp4 -p 8888
 In a second terminal, start the Gazebo simulation
 
 ```sh
-GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:~/git/ws/src/px4-fw-aerobatics/resources/models gz sim -r ~/git/ws/src/px4-fw-aerobatics/resrouces/worlds/default.sdf
+GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:~/git/ws/src/px4-fw-aerobatics/resources/models gz sim -r ~/git/ws/src/px4-fw-aerobatics/resources/worlds/default.sdf
 # Set the path where to find the drones' and objects .sdf and autostart (with `-r`) the default simulation world
 ```
 
@@ -181,7 +181,7 @@ cd ~/
 Alternatively, run all of the above 5 steps in one `screen` session
 
 ```sh
-screen -c ~/git/ws/src/px4-fw-aerobatics/resrouces/screenrc-example
+screen -c ~/git/ws/src/px4-fw-aerobatics/resources/screenrc-example
 killall screen && pkill -f gz # To quit screen and gazebo
 ```
 
