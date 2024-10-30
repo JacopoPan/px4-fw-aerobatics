@@ -9,18 +9,18 @@
 
 PX4_SIMULATOR=${PX4_SIMULATOR:=gz}
 PX4_GZ_WORLD=${PX4_GZ_WORLD:=default}
-PX4_GZ_MODEL=${PX4_GZ_MODEL:=custom_vtol}
+PX4_GZ_MODEL=${PX4_GZ_MODEL:=custom_vtol} # to use PX4_GZ_MODEL_POSE with PX4 1.14 SITL
+PX4_SIM_MODEL=${PX4_SIM_MODEL:=custom_vtol}
 
 param set-default SIM_GZ_HOME_LAT ${LAT_DEG}
 param set-default SIM_GZ_HOME_LON ${LON_DEG}
 param set-default SIM_GZ_HOME_ALT ${ELEV_M}
 
 # NEW
-param set-default NAV_LOITER_RAD 250 # default for HOLD mode for take-off and in MAV_CMD_DO_REPOSITION
-param set-default VTO_LOITER_ALT 120 # altitude relative to home at which vehicle will loiter after front transition
+param set-default NAV_LOITER_RAD 400 # default for HOLD mode for take-off and in MAV_CMD_DO_REPOSITION
+param set-default VTO_LOITER_ALT 150 # altitude relative to home at which vehicle will loiter after front transition
 param set-default COM_QC_ACT -1 # no quadchute, FUN BUT DO NOT USE IN REAL LIFE
 param set-default MPC_XY_CRUISE 3.0 # limit multicopter position speed in mission, RTL
-param set-default UXRCE_DDS_SYNCT 0 # in p4 1.15 only, for HIL
 
 param set-default SIM_GZ_EN 1
 
