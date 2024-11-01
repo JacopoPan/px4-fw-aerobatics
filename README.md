@@ -8,7 +8,7 @@ Autonomous aileron rolls and dives using VTOL's PX4 off-board control in ROS2
 
 Tested on Ubuntu 22.04 LTS with Nvidia 535 driver
 
-### ROS2 Humble
+### ROS2 Humble (1 of 7)
 
 ```sh
 sudo apt update && sudo apt install locales
@@ -35,7 +35,7 @@ echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-### Gazebo Harmonic
+### Gazebo Harmonic (2 of 7)
 
 ```sh
 sudo apt-get update
@@ -47,7 +47,7 @@ sudo apt-get install gz-harmonic
 sudo apt install ros-humble-ros-gzharmonic # To publish the Gazebo /clock topic used by ROS2 when use_sim_time is true
 ```
 
-### Custom PX4 SITL
+### PX4 SITL (3 of 7)
 
 ```sh
 mkdir -p ~/git/
@@ -60,7 +60,7 @@ pip install --user -U empy==3.3.4 pyros-genmsg setuptools
 make px4_sitl
 ```
 
-### QGroundControl
+### QGroundControl (4 of 7)
 
 ```sh
 cd ~/ # Place in the home folder
@@ -73,7 +73,7 @@ wget https://d176tv9ibo4jno.cloudfront.net/latest/QGroundControl.AppImage # From
 chmod +x ./QGroundControl.AppImage # Logout and login
 ```
 
-### uXRCE DDS Agent
+### uXRCE DDS Agent (5 of 7)
 
 ```sh
 cd ~/git/ # Place in a folder for git repos
@@ -87,7 +87,7 @@ sudo make install
 sudo ldconfig /usr/local/lib/
 ```
 
-### ROS2 Workspace
+### ROS2 Workspace (6 of 7)
 
 ```sh
 mkdir -p ~/git/ws/src/
@@ -108,7 +108,7 @@ echo "source ~/git/ws/install/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-### Customize PX4 SITL
+### Customize PX4 SITL (7 of 7)
 
 #### Customize PX4's DDS Topics for px4-fw-aerobatics
 
@@ -139,7 +139,9 @@ make px4_sitl # There will be warnings for the custom_vtol .sdf not being within
 
 Or use `./resources/set_dds_roms_and_rebuild_px4.sh` to apply these changes of PX4 params or DDS topics
 
-## Single Drone Example—Startup
+---
+
+## Example Startup
 
 In one terminal, start the DDS `MicroXRCEAgent`
 
@@ -185,7 +187,7 @@ screen -c ~/git/ws/src/px4-fw-aerobatics/resources/screenrc-example
 killall screen && pkill -f gz # To quit screen and gazebo
 ```
 
-## VTOL Aerobatics
+## Do VTOL Aerobatics
 
 Start the simulation environment for `custom_vtol` as in the example above
 

@@ -6,6 +6,7 @@ from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy, HistoryPo
 from rclpy.callback_groups import ReentrantCallbackGroup, MutuallyExclusiveCallbackGroup
 
 from enum import Enum
+from threading import Thread
 
 from geopy.point import Point
 from geopy.distance import distance
@@ -119,7 +120,9 @@ class PX4Whisperer(Node):
 
         # Services
         self.srv = self.create_service(
-            GetParameters, 'do_the_thing', self.service_callback,
+            GetParameters, 'do_the_thing', 
+            self.service_callback,
+            # self.threaded_service_callback,
             callback_group=self.callback_group_service)
 
         # Status/sensors readings
@@ -149,6 +152,11 @@ class PX4Whisperer(Node):
         if self.printer_counter % 400 == 0:
             self.get_logger().info(f'Pos: {self.lat:.2f} {self.lon:.2f} {self.alt:.2f} TAS: {self.tas_validated:.2f} VTOL Status: {self.vtol_status}')
         self.printer_counter += 1
+
+    # def threaded_service_callback(self, request, response): # alternatively, use different callback groups for subscribers and services
+    #     self.service_thread = Thread(target=self.service_callback, args=(request, response))
+    #     self.service_thread.start()
+    #     return response
 
     def service_callback(self, request, response):
         self.get_logger().info(f'Start service: {request.names[0]}')
@@ -192,6 +200,7 @@ class PX4Whisperer(Node):
                     self.time_of_offboard_start_ms = current_time_ms
                 if (current_time_ms < (self.time_of_offboard_start_ms + maneuver_time*1e3)):
                     self.do_offboard(off_type='rat', roll=4.0, thrust=0.5) # aileron roll
+                    print('doing the thing')
                     self.aircraft_state = State.OFFBOARD  
                 else:          
                     des_lat, des_lon = self.get_coord_from_cart(x_offset=-1000.0, y_offset=300.0)
