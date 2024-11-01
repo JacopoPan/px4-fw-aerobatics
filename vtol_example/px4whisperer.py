@@ -3,9 +3,9 @@ import rclpy
 from rclpy.node import Node
 from rclpy.clock import Clock
 from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy, HistoryPolicy
+from rclpy.callback_groups import ReentrantCallbackGroup, MutuallyExclusiveCallbackGroup
 
 from enum import Enum
-from threading import Thread
 
 from geopy.point import Point
 from geopy.distance import distance
@@ -15,7 +15,7 @@ from rcl_interfaces.srv import GetParameters
 from rcl_interfaces.msg import ParameterValue
 
 from px4_msgs.msg import VehicleCommand, OffboardControlMode, VehicleAttitudeSetpoint, VehicleRatesSetpoint, \
-                            VehicleGlobalPosition, VtolVehicleStatus, VehicleStatus, AirspeedValidated, Wind #, VehicleControlMode, NavigatorMissionItem
+                            VehicleGlobalPosition, VtolVehicleStatus, VehicleStatus, AirspeedValidated
 
 class State(Enum):
     PREARM = 1
@@ -82,6 +82,10 @@ class PX4Whisperer(Node):
             "/Drone1/fmu/in/vehicle_rates_setpoint",
             qos_profile)
 
+        # Callback groups
+        self.callback_group_subscriber = ReentrantCallbackGroup()  # Listen to subscribers in parallel
+        self.callback_group_service = MutuallyExclusiveCallbackGroup()  # Only one service call at a time
+
         # Subscribers
         qos_profile = QoSProfile(
                             history=HistoryPolicy.KEEP_LAST,
@@ -92,30 +96,31 @@ class PX4Whisperer(Node):
             VehicleGlobalPosition,
             "/Drone1/fmu/out/vehicle_global_position",
             self.subscribe_callback_pos,
-            qos_profile)
+            qos_profile,
+            callback_group=self.callback_group_subscriber)
         self.subscription = self.create_subscription(
             VtolVehicleStatus,
             "/Drone1/fmu/out/vtol_vehicle_status",
             self.subscribe_callback_vtol_status,
-            qos_profile)
+            qos_profile,
+            callback_group=self.callback_group_subscriber)
         self.subscription = self.create_subscription(
             VehicleStatus,
             "/Drone1/fmu/out/vehicle_status",
             self.subscribe_callback_status,
-            qos_profile)
+            qos_profile,
+            callback_group=self.callback_group_subscriber)
         self.subscription = self.create_subscription(
             AirspeedValidated,
             "/Drone1/fmu/out/airspeed_validated",
             self.subscribe_callback_airspeed_validated,
-            qos_profile)
-        self.subscription = self.create_subscription(
-            Wind,
-            "/Drone1/fmu/out/wind",
-            self.subscribe_callback_wind,
-            qos_profile)
+            qos_profile,
+            callback_group=self.callback_group_subscriber)
 
         # Services
-        self.srv = self.create_service(GetParameters, 'do_the_thing', self.threaded_service_callback)
+        self.srv = self.create_service(
+            GetParameters, 'do_the_thing', self.service_callback,
+            callback_group=self.callback_group_service)
 
         # Status/sensors readings
         self.lat = -1
@@ -124,8 +129,6 @@ class PX4Whisperer(Node):
         self.vtol_status = -1
         self.arming_state = -1
         self.tas_validated = -1
-        self.wind_n = -1
-        self.wind_e = -1
 
         self.printer_counter = 0
 
@@ -138,23 +141,14 @@ class PX4Whisperer(Node):
     def subscribe_callback_airspeed_validated(self, msg):
         self.tas_validated = msg.true_airspeed_m_s
 
-    def subscribe_callback_wind(self, msg):
-        self.wind_n = msg.windspeed_north
-        self.wind_e = msg.windspeed_east
-
     def subscribe_callback_pos(self, msg):
         self.lat = msg.lat
         self.lon = msg.lon
         self.alt = msg.alt
 
         if self.printer_counter % 400 == 0:
-            self.get_logger().info(f'Pos: {self.lat:.2f} {self.lon:.2f} {self.alt:.2f} TAS: {self.tas_validated:.2f} Wind: {self.wind_n:.2f} {self.wind_n:.2f} VTOL Status: {self.vtol_status}')
+            self.get_logger().info(f'Pos: {self.lat:.2f} {self.lon:.2f} {self.alt:.2f} TAS: {self.tas_validated:.2f} VTOL Status: {self.vtol_status}')
         self.printer_counter += 1
-
-    def threaded_service_callback(self, request, response): # alternatively, use different callback groups for subscribers and services
-        self.service_thread = Thread(target=self.service_callback, args=(request, response))
-        self.service_thread.start()
-        return response
 
     def service_callback(self, request, response):
         self.get_logger().info(f'Start service: {request.names[0]}')
@@ -409,7 +403,7 @@ class PX4Whisperer(Node):
         vehicle_command.param5 = param5  # Latitude
         vehicle_command.param6 = param6  # Longitude
         vehicle_command.param7 = param7  # Altitude
-        vehicle_command.target_system = 1
+        vehicle_command.target_system = 1 # for SITL, this is the PX4 instance (from 0) plus 1
         vehicle_command.target_component = 1
         vehicle_command.source_system = 255
         vehicle_command.source_component = 0
