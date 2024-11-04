@@ -15,7 +15,8 @@ from geopy.distance import geodesic
 from rcl_interfaces.srv import GetParameters
 from rcl_interfaces.msg import ParameterValue
 
-from px4_msgs.msg import VehicleCommand, OffboardControlMode, VehicleAttitudeSetpoint, VehicleRatesSetpoint, \
+from px4_msgs.msg import VehicleCommand, OffboardControlMode, \
+                            VehicleAttitudeSetpoint, VehicleRatesSetpoint, TrajectorySetpoint, \
                             VehicleGlobalPosition, VtolVehicleStatus, VehicleStatus, AirspeedValidated
 
 class State(Enum):
@@ -81,6 +82,10 @@ class PX4Whisperer(Node):
         self.rates_ref_pub = self.create_publisher(
             VehicleRatesSetpoint,
             "/Drone1/fmu/in/vehicle_rates_setpoint",
+            qos_profile)
+        self.traj_ref_pub = self.create_publisher(
+            TrajectorySetpoint,
+            "/Drone1/fmu/in/trajectory_setpoint",
             qos_profile)
 
         # Callback groups
@@ -187,13 +192,13 @@ class PX4Whisperer(Node):
             self.change_aircraft_state(State.FW)
 
         elif request.names[0] == 'reposition':
-            des_lat, des_lon = self.get_coord_from_cart(x_offset=-1000.0, y_offset=300.0)
+            des_lat, des_lon = self.get_coord_from_cart(x_offset=-3000.0, y_offset=300.0)
             self.do_reposition(lat=des_lat, lon=des_lon, alt=200.0)
             self.change_aircraft_state(State.FW)
 
         elif request.names[0] == 'roll':
             self.roll_request = True
-            maneuver_time = 1.0
+            maneuver_time = 0.33
             while self.roll_request:
                 current_time_ms = self.clock.now().nanoseconds / 1e6
                 if self.time_of_offboard_start_ms is None:
@@ -203,8 +208,6 @@ class PX4Whisperer(Node):
                     print('doing the thing')
                     self.aircraft_state = State.OFFBOARD  
                 else:          
-                    des_lat, des_lon = self.get_coord_from_cart(x_offset=-1000.0, y_offset=300.0)
-                    self.do_reposition(lat=des_lat, lon=des_lon, alt=200.0)
                     self.change_aircraft_state(State.FW)
                     self.time_of_offboard_start_ms = None
                     self.roll_request = False
@@ -220,11 +223,24 @@ class PX4Whisperer(Node):
                     self.do_offboard(off_type='att', pitch=-20.0, thrust=0.5) # dive
                     self.aircraft_state = State.OFFBOARD  
                 else:          
-                    des_lat, des_lon = self.get_coord_from_cart(x_offset=-1000.0, y_offset=300.0)
-                    self.do_reposition(lat=des_lat, lon=des_lon, alt=180.0)
                     self.change_aircraft_state(State.FW)
                     self.time_of_offboard_start_ms = None
                     self.dive_request = False
+
+        elif request.names[0] == 'traj':
+            self.traj_request = True
+            maneuver_time = 5.0
+            while self.traj_request:
+                current_time_ms = self.clock.now().nanoseconds / 1e6
+                if self.time_of_offboard_start_ms is None:
+                    self.time_of_offboard_start_ms = current_time_ms
+                if (current_time_ms < (self.time_of_offboard_start_ms + maneuver_time*1e3)):
+                    self.do_offboard(off_type='traj', ref=[250.0, -500.0, 0.0]) # see TrajectorySetpoint.msg, NED local world frame
+                    self.aircraft_state = State.OFFBOARD  
+                else:
+                    self.change_aircraft_state(State.FW)
+                    self.time_of_offboard_start_ms = None
+                    self.traj_request = False
 
         elif request.names[0] == 'land':
             self.land_request = True
@@ -366,7 +382,7 @@ class PX4Whisperer(Node):
                                 conf=0
                                 )
 
-    def do_offboard(self, off_type, roll=None, pitch=None, thrust=0.5):
+    def do_offboard(self, off_type, roll=None, pitch=None, ref=None, thrust=0.5):
         current_time_ms = self.clock.now().nanoseconds / 1e6
         offboard_mode = OffboardControlMode()
         offboard_mode.timestamp = int(current_time_ms)
@@ -390,6 +406,12 @@ class PX4Whisperer(Node):
                 rates_ref.pitch = pitch # rad/s
             rates_ref.thrust_body = [thrust, 0.0, 0.0]
             self.rates_ref_pub.publish(rates_ref)
+        elif off_type == 'traj':
+            offboard_mode.position = True
+            traj_ref = TrajectorySetpoint()
+            traj_ref.timestamp = int(current_time_ms)
+            traj_ref.velocity = ref
+            self.traj_ref_pub.publish(traj_ref)
         else:
             print("Unsupported offboard mode")
             exit()
@@ -397,6 +419,7 @@ class PX4Whisperer(Node):
         self.send_vehicle_command(
                             176, # MAV_CMD_DO_SET_MODE
                             param1=1.0,
+                            param2=6.0, # TODO not needed for attitude/rates references
                             conf=0
                             )
 

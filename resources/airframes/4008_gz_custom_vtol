@@ -19,8 +19,14 @@ param set-default SIM_GZ_HOME_ALT ${ELEV_M}
 # NEW
 param set-default NAV_LOITER_RAD 400 # default for HOLD mode for take-off and in MAV_CMD_DO_REPOSITION
 param set-default VTO_LOITER_ALT 150 # altitude relative to home at which vehicle will loiter after front transition
-param set-default COM_QC_ACT -1 # no quadchute, FUN BUT DO NOT USE IN REAL LIFE
 param set-default MPC_XY_CRUISE 3.0 # limit multicopter position speed in mission, RTL
+
+param set-default COM_QC_ACT -1 # no quadchute, FUN BUT DO NOT USE IN REAL LIFE
+param set-default COM_OBL_RC_ACT 5 # hold mode when falling out of offboard
+param set-default COM_OF_LOSS_T 1.0 # timeout for above failsafe
+param set-default NAV_RCL_ACT 1 # rc loss failsafe mode: hold mode
+param set-default COM_RCL_EXCEPT 7 # specify modes in which RC loss is ignored and the failsafe action not triggered
+param set-default COM_RC_OVERRIDE 0 # Enable RC stick override of auto and/or offboard modes 
 
 param set-default SIM_GZ_EN 1
 
@@ -119,13 +125,8 @@ param set-default VT_TYPE 2
 param set-default FD_ESCS_EN 0
 
 # Simulation only, with no remote
-param set COM_OBL_RC_ACT 7
-param set COM_OF_LOSS_T 10.0
-param set COM_OBC_LOSS_T 10.0
-param set NAV_RCL_ACT 0
+param set COM_OBC_LOSS_T 10.0 # Time-out to wait when onboard computer connection is lost before warning about loss connection 
 param set NAV_DLL_ACT 0
 param set GF_ACTION 0
-param set COM_RC_OVERRIDE 0
-param set COM_RCL_EXCEPT 7
 param set COM_FAIL_ACT_T 0.0
 param set EKF2_REQ_VDRIFT 0.5
