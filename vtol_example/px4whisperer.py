@@ -214,7 +214,7 @@ class PX4Whisperer(Node):
 
         elif request.names[0] == 'dive':
             self.dive_request = True
-            maneuver_time = 2.0
+            maneuver_time = 1.0
             while self.dive_request:
                 current_time_ms = self.clock.now().nanoseconds / 1e6
                 if self.time_of_offboard_start_ms is None:

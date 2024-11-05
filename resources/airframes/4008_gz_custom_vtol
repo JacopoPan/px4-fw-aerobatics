@@ -16,17 +16,18 @@ param set-default SIM_GZ_HOME_LAT ${LAT_DEG}
 param set-default SIM_GZ_HOME_LON ${LON_DEG}
 param set-default SIM_GZ_HOME_ALT ${ELEV_M}
 
-# NEW
-param set-default NAV_LOITER_RAD 400 # default for HOLD mode for take-off and in MAV_CMD_DO_REPOSITION
-param set-default VTO_LOITER_ALT 150 # altitude relative to home at which vehicle will loiter after front transition
+# HOLD behaviour
+param set-default NAV_LOITER_RAD 400 # default for HOLD mode for take-off, in MAV_CMD_DO_REPOSITION, exiting offboard
+param set-default VTO_LOITER_ALT 150 # altitude relative to home at which vehicle will loiter (e.g. after initial transition, exiting loiter)
 param set-default MPC_XY_CRUISE 3.0 # limit multicopter position speed in mission, RTL
 
+# Offboard failsafe behaviour
 param set-default COM_QC_ACT -1 # no quadchute, FUN BUT DO NOT USE IN REAL LIFE
 param set-default COM_OBL_RC_ACT 5 # hold mode when falling out of offboard
-param set-default COM_OF_LOSS_T 1.0 # timeout for above failsafe
+param set-default COM_OF_LOSS_T 1.0 # timeout for offboard failsafe
 param set-default NAV_RCL_ACT 1 # rc loss failsafe mode: hold mode
 param set-default COM_RCL_EXCEPT 7 # specify modes in which RC loss is ignored and the failsafe action not triggered
-param set-default COM_RC_OVERRIDE 0 # Enable RC stick override of auto and/or offboard modes 
+param set-default COM_RC_OVERRIDE 1 # Enable RC stick override of auto (0) and/or offboard modes(1)
 
 param set-default SIM_GZ_EN 1
 
