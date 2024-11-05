@@ -205,7 +205,6 @@ class PX4Whisperer(Node):
                     self.time_of_offboard_start_ms = current_time_ms
                 if (current_time_ms < (self.time_of_offboard_start_ms + maneuver_time*1e3)):
                     self.do_offboard(off_type='rat', roll=4.0, thrust=0.5) # aileron roll
-                    print('doing the thing')
                     self.aircraft_state = State.OFFBOARD  
                 else:          
                     self.change_aircraft_state(State.FW)
