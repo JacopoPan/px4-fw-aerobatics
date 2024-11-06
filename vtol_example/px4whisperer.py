@@ -271,7 +271,7 @@ class PX4Whisperer(Node):
                 elif self.aircraft_state == State.LANDING_SLOW_DOWN:
                     distance_in_meters = geodesic((self.lat, self.lon), (self.home_lat, self.home_lon)).meters
                     if distance_in_meters < 50.0: # might miss if the loiter exit was in the wrong place
-                        self.do_vtol_transition(trans_type=2.0)
+                        self.do_vtol_transition(trans_type=3.0)
                         self.change_aircraft_state(State.LANDING_TRANSITION)
 
                 elif self.aircraft_state == State.LANDING_TRANSITION and self.vtol_status == 3:
