@@ -172,14 +172,14 @@ class PX4Whisperer(Node):
             while self.takeoff_request:
                 current_time_ms = self.clock.now().nanoseconds / 1e6
                 if self.aircraft_state == State.PREARM:
-                    self.do_takeoff(alt=30, yaw=self.des_bear + 180.0) # Note: desired yaw requires custom PX4
+                    self.do_takeoff(alt=60, yaw=self.des_bear + 180.0) # Note: desired yaw requires custom PX4
                     self.change_aircraft_state(State.TAKEOFF_MC)
                 elif self.aircraft_state == State.TAKEOFF_MC:
                     if self.vtol_status == 4:
                         self.change_aircraft_state(State.TAKEOFF_TRANSITIONED)
                 elif self.aircraft_state == State.TAKEOFF_TRANSITIONED and (current_time_ms > (self.time_of_fw_transition_ms + 10.0*1e3)):
                     des_lat, des_lon = self.get_coord_from_cart(x_offset=500.0, y_offset=-150.0)
-                    self.do_orbit(lat=des_lat, lon=des_lon, alt=60.0, r=300.0, speed=15.0)
+                    self.do_orbit(lat=des_lat, lon=des_lon, alt=100.0, r=300.0, speed=15.0)
                     self.change_aircraft_state(State.FW)
                     self.takeoff_request = False
 
@@ -261,7 +261,7 @@ class PX4Whisperer(Node):
                     distance_from_exit_in_meters = geodesic((self.lat, self.lon), (exit_lat, exit_lon)).meters
                     if distance_from_exit_in_meters < 30.0 and abs(self.alt - (self.home_alt + 80.0)) < 10.0:
                         des_lat, des_lon = self.get_coord_from_polar(dist=500.0,bear=self.des_bear+180.0)
-                        self.do_reposition(lat=des_lat, lon=des_lon, alt=50.0)
+                        self.do_reposition(lat=des_lat, lon=des_lon, alt=60.0)
                         self.change_aircraft_state(State.LANDING_APPROACH)
 
                 elif self.aircraft_state == State.LANDING_APPROACH:
@@ -280,7 +280,7 @@ class PX4Whisperer(Node):
 
                 elif self.aircraft_state == State.LANDING_RTL:
                     distance_in_meters = geodesic((self.lat, self.lon), (self.home_lat, self.home_lon)).meters
-                    if distance_in_meters < 5.0:
+                    if distance_in_meters < 3.0:
                         self.do_land()
                         self.change_aircraft_state(State.LANDING_FINAL)
                         self.land_request = False
