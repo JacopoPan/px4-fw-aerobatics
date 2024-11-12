@@ -2,7 +2,7 @@
 screen -t microxrceagent bash -c 'MicroXRCEAgent udp4 -p 8888'
 
 # Terminal 2: Gazebo Simulator
-screen -t gazebo bash -c 'GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:~/git/ws/src/px4-fw-aerobatics/resources/models gz sim -r ~/git/ws/src/px4-fw-aerobatics/resources/worlds/default.sdf'
+screen -t gazebo bash -c 'GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:~/git/ws/src/px4-fw-aerobatics/resources/models gz sim -v4 -r ~/git/ws/src/px4-fw-aerobatics/resources/worlds/default.sdf'
 
 # Terminal 3: Publish the Gazebo simulation clock for ROS2
 screen -t sim_clock bash -c 'source ~/git/ws/install/setup.bash && source /opt/ros/humble/setup.bash; ros2 run ros_gz_bridge parameter_bridge /clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'
