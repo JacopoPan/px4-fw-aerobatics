@@ -1,3 +1,6 @@
+> [!WARNING]
+> This repository is now archived: check out project [`aerial-autonomy-stack`](https://github.com/JacopoPan/aerial-autonomy-stack) instead
+
 # PX4 Fixed-Wing Aerobatics
 
 Autonomous aileron rolls and dives using VTOL's PX4 off-board control in ROS2
